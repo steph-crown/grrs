@@ -1,5 +1,5 @@
 use clap::Parser;
-use std::path::PathBuf;
+use std::{fs::read_to_string, path::PathBuf};
 
 /// Search for a pattern in a file and display the lines that contain it
 #[derive(Parser)]
@@ -11,8 +11,11 @@ struct Cli {
 
 fn main() {
   let args = Cli::parse();
-  let a: PathBuf = PathBuf::from("sjjs");
-  let b = a.to_str();
+  let content = read_to_string(&args.path).expect("An error occured readding file");
 
-  println!("Pattern: {:?}, Path: {:?}", args.pattern, args.path);
+  for (index, line) in content.lines().enumerate() {
+    if line.contains(&args.pattern) {
+      println!("{}: {line}", index + 1)
+    }
+  }
 }
