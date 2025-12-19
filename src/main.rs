@@ -1,14 +1,18 @@
-use std::env::args;
+use clap::Parser;
+use std::path::PathBuf;
 
-fn main() {
-  let pattern = get_arg(1, "No pattern is given");
-  let path = get_arg(2, "No path is given");
-
-  println!("pattern {:?}, path {:?}", pattern, path);
+/// Search for a pattern in a file and display the lines that contain it
+#[derive(Parser)]
+struct Cli {
+  /// The pattern to look for
+  pattern: String,
+  path: PathBuf,
 }
 
-fn get_arg(pos: usize, err_message: &'static str) -> String {
-  let value = args().nth(pos).expect(err_message);
+fn main() {
+  let args = Cli::parse();
+  let a: PathBuf = PathBuf::from("sjjs");
+  let b = a.to_str();
 
-  value
+  println!("Pattern: {:?}, Path: {:?}", args.pattern, args.path);
 }
