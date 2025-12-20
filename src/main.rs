@@ -24,17 +24,9 @@ fn process_args_v1(args: &Cli) -> Result<()> {
   let content = read_to_string(&args.path)
     .with_context(|| format!("An error occured opening at path {:?}", args.path))?;
 
-  find_matches(&content, &args.pattern, &mut std::io::stdout());
+  grrs::find_matches(&content, &args.pattern, &mut std::io::stdout());
 
   Ok(())
-}
-
-fn find_matches(content: &String, pattern: &String, mut writer: impl std::io::Write) {
-  for (index, line) in content.lines().enumerate() {
-    if line.contains(pattern) {
-      let _ = writeln!(writer, "{}: {line}", index + 1);
-    }
-  }
 }
 
 #[test]
@@ -43,7 +35,7 @@ fn test_find_matches() {
   let pattern = String::from("lorem");
 
   let mut result = Vec::new();
-  find_matches(&content, &pattern, &mut result);
+  grrs::find_matches(&content, &pattern, &mut result);
   println!("{:?}", result);
   assert_eq!(result, b"1: lorem ipsum\n");
 }
