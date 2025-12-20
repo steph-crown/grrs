@@ -1,6 +1,8 @@
-use clap::{Error, Parser};
+// use anyhow::Context;
+use anyhow::{Context, Result};
+use clap::Parser;
 use std::{
-  fs::{File, read_to_string},
+  fs::File,
   io::{BufRead, BufReader},
   path::PathBuf,
 };
@@ -13,10 +15,7 @@ struct Cli {
   path: PathBuf,
 }
 
-#[derive(Debug)]
-struct CustomError(String);
-
-fn main() -> Result<(), CustomError> {
+fn main() -> Result<()> {
   let args = Cli::parse();
 
   return process_args_v2(&args);
@@ -32,18 +31,9 @@ fn main() -> Result<(), CustomError> {
 //   }
 // }
 
-fn process_args_v2(args: &Cli) -> Result<(), CustomError> {
-  let file = File::open(&args.path).map_err(|err| {
-    CustomError(format!(
-      "Error reading file at path `{:?}`: {}",
-      args.path, err
-    ))
-  })?;
-
-  // let file_content = match file {
-  //   Ok(content) => content,
-  //   Err(err) => return Err(err.into()),
-  // };
+fn process_args_v2(args: &Cli) -> Result<()> {
+  let file = File::open(&args.path)
+    .with_context(|| format!("An error occured opening at path {:?}", args.path))?;
 
   let reader = BufReader::new(&file);
 
